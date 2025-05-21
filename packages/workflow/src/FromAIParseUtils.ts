@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { z } from 'zod';
+import { z, ZodNumber } from 'zod';
 
 import { INodePropertyOptions, INodeType } from '.';
 import { jsonParse } from './utils';
@@ -110,7 +110,7 @@ export function generateZodSchemaExtended(
 	nodeType: INodeType,
 	placeholder: FromAIArgument,
 ): z.ZodTypeAny {
-	let schema;
+	let schema: z.ZodTypeAny;
 	const parameter = nodeType.description.properties.find((param) => {
 		if (
 			param.name === placeholder.key ||
@@ -140,10 +140,10 @@ export function generateZodSchemaExtended(
 		case 'number':
 			schema = z.number();
 			if (parameter.typeOptions?.minValue !== undefined) {
-				schema = schema.min(parameter.typeOptions.minValue);
+				schema = (schema as ZodNumber).min(parameter.typeOptions.minValue);
 			}
 			if (parameter.typeOptions?.maxValue !== undefined) {
-				schema = schema.max(parameter.typeOptions.maxValue);
+				schema = (schema as ZodNumber).max(parameter.typeOptions.maxValue);
 			}
 
 			break;
@@ -158,7 +158,8 @@ export function generateZodSchemaExtended(
 			if (Array.isArray(parameter.default)) {
 				schema = z.array(z.enum(enumValues));
 				if (parameter.typeOptions?.multipleValues === false) {
-					schema = schema.max(1);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					schema = (schema as z.ZodArray<any>).max(1);
 				}
 			} else {
 				schema = z.enum(enumValues);
@@ -170,12 +171,38 @@ export function generateZodSchemaExtended(
 			schema = generateZodSchema(placeholder);
 	}
 
-	schema = schema.describe(
-		schema.description ??
-			(placeholder.description?.length
-				? placeholder.description
-				: (parameter.description ?? 'No description provided')),
-	);
+	const getDescription = (): string => {
+		if (schema.description?.length) {
+			return schema.description;
+		}
+
+		if (placeholder.description?.length) {
+			return placeholder.description;
+		}
+
+		if (parameter.asToolOptions?.description?.length) {
+			return parameter.asToolOptions.description;
+		}
+
+		if (parameter.description?.length) {
+			return parameter.description;
+		}
+
+		return '';
+	};
+
+	const getInstructions = (): string => {
+		if (!parameter.asToolOptions?.instructions?.length) {
+			return '';
+		}
+
+		return `*NOTE*: ${parameter.asToolOptions.instructions}`;
+	};
+
+	const description = [getDescription(), getInstructions()].filter(Boolean).join('. ').trim();
+	if (description.length) {
+		schema = schema.describe(description);
+	}
 
 	if (placeholder.defaultValue !== undefined) {
 		schema = schema.default(placeholder.defaultValue);

@@ -1409,6 +1409,11 @@ export interface ICredentialsDisplayOptions {
 	hideOnCloud?: boolean;
 }
 
+export interface INodePropertyAsToolOptions {
+	description?: string;
+	instructions?: string;
+}
+
 export interface INodeProperties {
 	displayName: string;
 	name: string;
@@ -1438,6 +1443,7 @@ export interface INodeProperties {
 	// allows to skip validation during execution or set custom validation/casting logic inside node
 	// inline error messages would still be shown in UI
 	ignoreValidationDuringExecution?: boolean;
+	asToolOptions?: INodePropertyAsToolOptions;
 }
 
 export interface INodePropertyModeTypeOptions {
