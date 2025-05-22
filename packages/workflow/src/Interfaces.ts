@@ -12,6 +12,7 @@ import type { Readable } from 'stream';
 import type { SecureContextOptions } from 'tls';
 import type { URLSearchParams } from 'url';
 
+import { JSONSchema } from '@dmitryrechkin/json-schema-to-zod';
 import type { CODE_EXECUTION_MODES, CODE_LANGUAGES, LOG_LEVELS } from './Constants';
 import type { IDeferredPromise } from './DeferredPromise';
 import type { ExecutionCancelledError } from './errors';
@@ -1291,6 +1292,10 @@ export interface INodePropertyTypeOptions {
 		label?: string; // otherwise "displayName" is used
 		hasInputField?: boolean;
 		inputFieldMaxLength?: number; // Supported if hasInputField is true
+	};
+	jsonConfig?: {
+		schema?: JSONSchema;
+		properties?: INodeProperties[];
 	};
 	containerClass?: string; // Supported by: notice
 	alwaysOpenEditWindow?: boolean; // Supported by: json
