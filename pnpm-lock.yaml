@@ -204,6 +204,9 @@ importers:
 
   .:
     dependencies:
+      '@dmitryrechkin/json-schema-to-zod':
+        specifier: ^1.0.1
+        version: 1.0.1
       extract-json-from-string:
         specifier: ^1.0.1
         version: 1.0.1
@@ -421,7 +424,7 @@ importers:
         version: 4.0.7
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
       dotenv:
         specifier: 8.6.0
         version: 8.6.0
@@ -446,7 +449,7 @@ importers:
     dependencies:
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
     devDependencies:
       '@n8n/typescript-config':
         specifier: workspace:*
@@ -740,7 +743,7 @@ importers:
         version: 4.3.0
       '@getzep/zep-cloud':
         specifier: 1.0.12
-        version: 1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(9b9a451e446ad3ea9ebac049587c5a34))
+        version: 1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(ef11abf912b177072dc4684c7f1e0991))
       '@getzep/zep-js':
         specifier: 0.9.0
         version: 0.9.0
@@ -767,7 +770,7 @@ importers:
         version: 0.3.2(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)
       '@langchain/community':
         specifier: 'catalog:'
-        version: 0.3.24(415e1c4f3090ad57f7ece71a5a3da6ea)
+        version: 0.3.24(9774993bd0951409473d3b7bed828d6f)
       '@langchain/core':
         specifier: 'catalog:'
         version: 0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1))
@@ -872,7 +875,7 @@ importers:
         version: 23.0.1
       langchain:
         specifier: 0.3.11
-        version: 0.3.11(9b9a451e446ad3ea9ebac049587c5a34)
+        version: 0.3.11(ef11abf912b177072dc4684c7f1e0991)
       lodash:
         specifier: 'catalog:'
         version: 4.17.21
@@ -1162,7 +1165,7 @@ importers:
         version: 4.0.7
       '@rudderstack/rudder-sdk-node':
         specifier: 2.1.4
-        version: 2.1.4(tslib@2.6.2)
+        version: 2.1.4(tslib@2.8.1)
       '@sentry/node':
         specifier: 'catalog:'
         version: 8.52.1
@@ -1171,7 +1174,7 @@ importers:
         version: 1.11.0
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
       bcryptjs:
         specifier: 2.4.3
         version: 2.4.3
@@ -1502,7 +1505,7 @@ importers:
         version: 8.52.1
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
       callsites:
         specifier: 'catalog:'
         version: 3.1.0
@@ -2032,7 +2035,7 @@ importers:
         version: 1.1.4
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
       bowser:
         specifier: 2.11.0
         version: 2.11.0
@@ -2570,6 +2573,9 @@ importers:
 
   packages/workflow:
     dependencies:
+      '@dmitryrechkin/json-schema-to-zod':
+        specifier: '*'
+        version: 1.0.1
       '@n8n/tournament':
         specifier: 1.0.6
         version: 1.0.6
@@ -2578,7 +2584,7 @@ importers:
         version: 0.15.2
       axios:
         specifier: 'catalog:'
-        version: 1.8.3(debug@4.4.0)
+        version: 1.8.3(debug@4.3.6)
       callsites:
         specifier: 'catalog:'
         version: 3.1.0
@@ -3747,6 +3753,9 @@ packages:
   '@dagrejs/graphlib@2.2.4':
     resolution: {integrity: sha512-mepCf/e9+SKYy1d02/UkvSy6+6MoyXhVxP8lLDfA7BPE1X1d4dR0sZznmbM8/XVJ1GPM+Svnx7Xj6ZweByWUkw==}
     engines: {node: '>17.0.0'}
+
+  '@dmitryrechkin/json-schema-to-zod@1.0.1':
+    resolution: {integrity: sha512-cG9gC4NMu/7JZqmRZy6uIb+l+kxek2GFQ0/qrhw7xeFK2l5B9yF9FVuujoqFPLRGDHNFYqtBWht7hY4KB0ngrA==}
 
   '@element-plus/icons-vue@2.3.1':
     resolution: {integrity: sha512-XxVUZv48RZAd87ucGS48jPf6pKu0yV5UCg9f4FFwtrYxXOwWuVJo6wOvSLKEoMQKjv8GsX/mhP6UsC1lRwbUWg==}
@@ -7032,11 +7041,6 @@ packages:
 
   acorn@8.14.0:
     resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
-  acorn@8.14.1:
-    resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -12088,9 +12092,6 @@ packages:
     engines: {node: '>= 0.10'}
     hasBin: true
 
-  psl@1.15.0:
-    resolution: {integrity: sha512-JZd3gMVBAVQkSs6HdNZo9Sdo0LNcQeMNP3CozBJb3JYC/QUYZTnKxP+f8oWRX4rHP5EurWxqAHTSwUCjlNKa1w==}
-
   psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
 
@@ -16462,6 +16463,10 @@ snapshots:
 
   '@dagrejs/graphlib@2.2.4': {}
 
+  '@dmitryrechkin/json-schema-to-zod@1.0.1':
+    dependencies:
+      zod: 3.24.1
+
   '@element-plus/icons-vue@2.3.1(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       vue: 3.5.13(typescript@5.8.2)
@@ -16614,7 +16619,7 @@ snapshots:
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@getzep/zep-cloud@1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(9b9a451e446ad3ea9ebac049587c5a34))':
+  '@getzep/zep-cloud@1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(ef11abf912b177072dc4684c7f1e0991))':
     dependencies:
       form-data: 4.0.0
       node-fetch: 2.7.0(encoding@0.1.13)
@@ -16623,7 +16628,7 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       '@langchain/core': 0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1))
-      langchain: 0.3.11(9b9a451e446ad3ea9ebac049587c5a34)
+      langchain: 0.3.11(ef11abf912b177072dc4684c7f1e0991)
     transitivePeerDependencies:
       - encoding
 
@@ -17141,7 +17146,7 @@ snapshots:
       - aws-crt
       - encoding
 
-  '@langchain/community@0.3.24(415e1c4f3090ad57f7ece71a5a3da6ea)':
+  '@langchain/community@0.3.24(9774993bd0951409473d3b7bed828d6f)':
     dependencies:
       '@browserbasehq/stagehand': 1.9.0(@playwright/test@1.49.1)(deepmerge@4.3.1)(dotenv@16.5.0)(encoding@0.1.13)(openai@4.78.1(encoding@0.1.13)(zod@3.24.1))(zod@3.24.1)
       '@ibm-cloud/watsonx-ai': 1.1.2
@@ -17152,7 +17157,7 @@ snapshots:
       flat: 5.0.2
       ibm-cloud-sdk-core: 5.3.2
       js-yaml: 4.1.0
-      langchain: 0.3.11(9b9a451e446ad3ea9ebac049587c5a34)
+      langchain: 0.3.11(ef11abf912b177072dc4684c7f1e0991)
       langsmith: 0.2.15(openai@4.78.1(encoding@0.1.13)(zod@3.24.1))
       openai: 4.78.1(encoding@0.1.13)(zod@3.24.1)
       uuid: 10.0.0
@@ -17167,7 +17172,7 @@ snapshots:
       '@aws-sdk/credential-provider-node': 3.808.0
       '@azure/storage-blob': 12.26.0
       '@browserbasehq/sdk': 2.6.0(encoding@0.1.13)
-      '@getzep/zep-cloud': 1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(9b9a451e446ad3ea9ebac049587c5a34))
+      '@getzep/zep-cloud': 1.0.12(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)(langchain@0.3.11(ef11abf912b177072dc4684c7f1e0991))
       '@getzep/zep-js': 0.9.0
       '@google-ai/generativelanguage': 2.6.0(encoding@0.1.13)
       '@google-cloud/storage': 7.12.1(encoding@0.1.13)
@@ -18227,9 +18232,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.35.0':
     optional: true
 
-  '@rudderstack/rudder-sdk-node@2.1.4(tslib@2.6.2)':
+  '@rudderstack/rudder-sdk-node@2.1.4(tslib@2.8.1)':
     dependencies:
-      axios: 1.8.3
+      axios: 1.8.3(debug@4.3.6)
       axios-retry: 4.5.0(axios@1.8.3)
       component-type: 2.0.0
       join-component: 1.1.0
@@ -18239,7 +18244,7 @@ snapshots:
       ms: 2.1.3
       remove-trailing-slash: 0.1.1
       serialize-javascript: 6.0.2
-      tslib: 2.6.2
+      tslib: 2.8.1
       uuid: 11.0.2
     optionalDependencies:
       bull: 4.16.4(patch_hash=a4b6d56db16fe5870646929938466d6a5c668435fd1551bed6a93fffb597ba42)
@@ -20243,8 +20248,6 @@ snapshots:
 
   acorn@8.14.0: {}
 
-  acorn@8.14.1: {}
-
   adm-zip@0.5.10: {}
 
   agent-base@5.1.1: {}
@@ -20570,16 +20573,8 @@ snapshots:
 
   axios-retry@4.5.0(axios@1.8.3):
     dependencies:
-      axios: 1.8.3
+      axios: 1.8.3(debug@4.3.6)
       is-retry-allowed: 2.2.0
-
-  axios@1.8.3:
-    dependencies:
-      follow-redirects: 1.15.6(debug@4.4.0)
-      form-data: 4.0.0
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
 
   axios@1.8.3(debug@4.3.6):
     dependencies:
@@ -20600,7 +20595,7 @@ snapshots:
   axios@1.9.0(debug@4.4.1):
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.1)
-      form-data: 4.0.0
+      form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -22231,7 +22226,7 @@ snapshots:
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       is-core-module: 2.13.1
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -22256,7 +22251,7 @@ snapshots:
 
   eslint-module-utils@2.8.0(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     optionalDependencies:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.8.2)
       eslint: 8.57.0
@@ -22276,7 +22271,7 @@ snapshots:
       array.prototype.findlastindex: 1.2.3
       array.prototype.flat: 1.3.2
       array.prototype.flatmap: 1.3.2
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
@@ -23112,7 +23107,7 @@ snapshots:
       array-parallel: 0.1.3
       array-series: 0.1.5
       cross-spawn: 7.0.6
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -23416,7 +23411,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.9.0(debug@4.4.1))
+      retry-axios: 2.6.0(axios@1.9.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -23481,7 +23476,7 @@ snapshots:
 
   infisical-node@1.3.0:
     dependencies:
-      axios: 1.8.3
+      axios: 1.8.3(debug@4.3.6)
       dotenv: 16.3.1
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
@@ -24410,7 +24405,7 @@ snapshots:
 
   kuler@2.0.0: {}
 
-  langchain@0.3.11(9b9a451e446ad3ea9ebac049587c5a34):
+  langchain@0.3.11(ef11abf912b177072dc4684c7f1e0991):
     dependencies:
       '@langchain/core': 0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1))
       '@langchain/openai': 0.3.17(@langchain/core@0.3.30(openai@4.78.1(encoding@0.1.13)(zod@3.24.1)))(encoding@0.1.13)
@@ -25975,7 +25970,7 @@ snapshots:
 
   pdf-parse@1.1.1:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       node-ensure: 0.0.0
     transitivePeerDependencies:
       - supports-color
@@ -26201,7 +26196,7 @@ snapshots:
 
   posthog-node@3.2.1:
     dependencies:
-      axios: 1.8.3
+      axios: 1.8.3(debug@4.3.6)
       rusha: 0.8.14
     transitivePeerDependencies:
       - debug
@@ -26346,10 +26341,6 @@ snapshots:
   ps-tree@1.2.0:
     dependencies:
       event-stream: 3.3.4
-
-  psl@1.15.0:
-    dependencies:
-      punycode: 2.3.1
 
   psl@1.9.0: {}
 
@@ -26791,7 +26782,7 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
 
-  retry-axios@2.6.0(axios@1.9.0(debug@4.4.1)):
+  retry-axios@2.6.0(axios@1.9.0):
     dependencies:
       axios: 1.9.0(debug@4.4.1)
 
@@ -26818,7 +26809,7 @@ snapshots:
 
   rhea@1.0.24:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -27253,7 +27244,7 @@ snapshots:
       asn1.js: 5.4.1
       asn1.js-rfc2560: 5.0.1(asn1.js@5.4.1)
       asn1.js-rfc5280: 3.0.0
-      axios: 1.8.3
+      axios: 1.8.3(debug@4.3.6)
       big-integer: 1.6.52
       bignumber.js: 9.1.2
       binascii: 0.0.2
@@ -27766,7 +27757,7 @@ snapshots:
   terser@5.16.1:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.14.1
+      acorn: 8.14.0
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -27873,7 +27864,7 @@ snapshots:
 
   tough-cookie@4.1.4:
     dependencies:
-      psl: 1.15.0
+      psl: 1.9.0
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
@@ -27966,7 +27957,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 18.16.16
-      acorn: 8.14.1
+      acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -27985,7 +27976,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 18.19.103
-      acorn: 8.14.1
+      acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -28030,8 +28021,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   tsscmp@1.0.6: {}
 
