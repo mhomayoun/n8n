@@ -1,7 +1,5 @@
-/* eslint-disable complexity */
-import { z, ZodNumber } from 'zod';
+import { z } from 'zod';
 
-import { INodePropertyOptions, INodeType } from '.';
 import { jsonParse } from './utils';
 
 /**
@@ -101,115 +99,6 @@ export function generateZodSchema(placeholder: FromAIArgument): z.ZodTypeAny {
 
 	if (placeholder.defaultValue !== undefined) {
 		schema = schema.default(placeholder.defaultValue);
-	}
-
-	return schema;
-}
-
-export function generateZodSchemaExtended(
-	nodeType: INodeType,
-	placeholder: FromAIArgument,
-): z.ZodTypeAny {
-	let schema: z.ZodTypeAny;
-	const parameter = nodeType.description.properties.find((param) => {
-		if (
-			param.name === placeholder.key ||
-			param.displayName === placeholder.key.replace(/_/g, ' ')
-		) {
-			return true;
-		}
-
-		return false;
-	});
-
-	if (!parameter) {
-		throw new ParseError(
-			`Parameter ${placeholder.key} not found in node type ${nodeType.description.name}`,
-		);
-	}
-
-	switch (parameter.type) {
-		case 'dateTime':
-			schema = z.string();
-			break;
-
-		case 'string':
-			schema = z.string();
-			break;
-
-		case 'number':
-			schema = z.number();
-			if (parameter.typeOptions?.minValue !== undefined) {
-				schema = (schema as ZodNumber).min(parameter.typeOptions.minValue);
-			}
-			if (parameter.typeOptions?.maxValue !== undefined) {
-				schema = (schema as ZodNumber).max(parameter.typeOptions.maxValue);
-			}
-
-			break;
-
-		case 'fixedCollection':
-		case 'collection':
-		case 'options':
-		case 'multiOptions':
-			const enumValues = parameter.options!.map(
-				(option) => (option as INodePropertyOptions).value,
-			) as [string, ...string[]];
-			if (Array.isArray(parameter.default)) {
-				schema = z.array(z.enum(enumValues));
-				if (parameter.typeOptions?.multipleValues === false) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					schema = (schema as z.ZodArray<any>).max(1);
-				}
-			} else {
-				schema = z.enum(enumValues);
-			}
-
-			break;
-
-		default:
-			schema = generateZodSchema(placeholder);
-	}
-
-	const getDescription = (): string => {
-		if (schema.description?.length) {
-			return schema.description;
-		}
-
-		if (placeholder.description?.length) {
-			return placeholder.description;
-		}
-
-		if (parameter.asToolOptions?.description?.length) {
-			return parameter.asToolOptions.description;
-		}
-
-		if (parameter.description?.length) {
-			return parameter.description;
-		}
-
-		return '';
-	};
-
-	const getInstructions = (): string => {
-		if (!parameter.asToolOptions?.instructions?.length) {
-			return '';
-		}
-
-		return `*NOTE*: ${parameter.asToolOptions.instructions}`;
-	};
-
-	const description = [getDescription(), getInstructions()].filter(Boolean).join('. ').trim();
-	if (description.length) {
-		schema = schema.describe(description);
-	}
-
-	if (placeholder.defaultValue !== undefined) {
-		schema = schema.default(placeholder.defaultValue);
-	}
-
-	if (parameter.required !== true) {
-		schema = schema.nullable();
 	}
 
 	return schema;
