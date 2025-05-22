@@ -42,6 +42,7 @@
     "@types/xml2js": "catalog:"
   },
   "dependencies": {
+    "@dmitryrechkin/json-schema-to-zod": "catalog:",
     "@n8n/tournament": "1.0.6",
     "ast-types": "0.15.2",
     "axios": "catalog:",
@@ -59,7 +60,6 @@
     "title-case": "3.0.3",
     "transliteration": "2.3.5",
     "xml2js": "catalog:",
-    "zod": "catalog:",
-    "@dmitryrechkin/json-schema-to-zod": "*"
+    "zod": "catalog:"
   }
 }

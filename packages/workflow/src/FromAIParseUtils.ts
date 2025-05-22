@@ -1,5 +1,7 @@
+//import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
 import { z } from 'zod';
 
+import type { INodeProperties, INodePropertyOptions, INodeType } from '.';
 import { jsonParse } from './utils';
 
 /**
@@ -333,4 +335,153 @@ export function traverseNodeParametersWithParamNames(
 			traverseNodeParametersWithParamNames(value, collectedArgs, name ? name + '.' + key : key);
 		}
 	}
+}
+
+/*****************************************************************
+ * Extended FromAI Parsing
+ ****************************************************************/
+const setNodeParameterAIDescription = (
+	schema: z.ZodTypeAny,
+	parameter: INodeProperties,
+	placeholder?: FromAIArgument,
+) => {
+	const getDescription = (): string => {
+		if (schema.description?.length) {
+			return schema.description;
+		}
+
+		if (placeholder?.description?.length) {
+			return placeholder.description;
+		}
+
+		if (parameter.asToolOptions?.description?.length) {
+			return parameter.asToolOptions.description;
+		}
+
+		if (parameter.description?.length) {
+			return parameter.description;
+		}
+
+		return '';
+	};
+
+	const getInstructions = (): string => {
+		if (!parameter.asToolOptions?.instructions?.length) {
+			return '';
+		}
+
+		return `*NOTE*: ${parameter.asToolOptions.instructions}`;
+	};
+
+	const description = [getDescription(), getInstructions()].filter(Boolean).join('. ').trim();
+	if (description.length) {
+		schema = schema.describe(description);
+	}
+
+	return schema;
+};
+
+const nodeParameterToZodSchema = (
+	parameter: INodeProperties,
+	placeholder: FromAIArgument,
+): z.ZodTypeAny => {
+	if (parameter.type === 'json') {
+		if (parameter.typeOptions?.jsonConfig?.schema) {
+			//return JSONSchemaToZod.convert(parameter.typeOptions.jsonConfig.schema);
+			throw new ParseError('JSON schema parsing is not supported yet');
+		}
+
+		if (parameter.typeOptions?.jsonConfig?.properties?.length) {
+			const properties = parameter.typeOptions.jsonConfig.properties.map((property) => {
+				let propertySchema = nodeParameterToZodSchema(property, placeholder);
+				propertySchema = setNodeParameterAIDescription(propertySchema, property);
+				if (placeholder.defaultValue !== undefined)
+					propertySchema = propertySchema.default(placeholder.defaultValue);
+				if (property.required !== true) propertySchema = propertySchema.nullable();
+
+				return {
+					[property.name]: propertySchema,
+				};
+			});
+
+			return z.object(Object.assign({}, ...properties));
+		}
+
+		return generateZodSchema(placeholder);
+	}
+
+	if (parameter.type === 'number') {
+		let schema = z.number();
+		if (parameter.typeOptions?.minValue !== undefined) {
+			schema = schema.min(parameter.typeOptions.minValue);
+		}
+		if (parameter.typeOptions?.maxValue !== undefined) {
+			schema = schema.max(parameter.typeOptions.maxValue);
+		}
+
+		return schema;
+	}
+
+	switch (parameter.type) {
+		case 'string':
+			return z.string();
+
+		case 'dateTime':
+			return z.string();
+
+		case 'collection':
+		case 'options':
+		case 'multiOptions':
+			const enumValues = parameter.options!.map(
+				(option) => (option as INodePropertyOptions).value,
+			) as [string, ...string[]];
+
+			if (Array.isArray(parameter.default)) {
+				let arraySchema = z.array(z.enum(enumValues));
+				if (parameter.typeOptions?.multipleValues === false) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					arraySchema = arraySchema.max(1);
+				}
+
+				return arraySchema;
+			}
+
+			return z.enum(enumValues);
+	}
+
+	return generateZodSchema(placeholder);
+};
+
+export function generateZodSchemaExtended<T = z.ZodTypeAny>(
+	nodeType: INodeType,
+	placeholder: FromAIArgument,
+): T {
+	const parameter = nodeType.description.properties.find((param) => {
+		if (
+			param.name === placeholder.key ||
+			param.displayName === placeholder.key.replace(/_/g, ' ')
+		) {
+			return true;
+		}
+
+		return false;
+	});
+
+	if (!parameter) {
+		throw new ParseError(
+			`Parameter ${placeholder.key} not found in node type ${nodeType.description.name}`,
+		);
+	}
+
+	let schema = nodeParameterToZodSchema(parameter, placeholder);
+	schema = setNodeParameterAIDescription(schema, parameter, placeholder);
+	if (placeholder.defaultValue !== undefined) {
+		schema = schema.default(placeholder.defaultValue);
+	}
+
+	if (parameter.required !== true) {
+		schema = schema.nullable();
+	}
+
+	return schema as T;
 }
