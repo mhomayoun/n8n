@@ -42,7 +42,6 @@
     "@types/xml2js": "catalog:"
   },
   "dependencies": {
-    "@dmitryrechkin/json-schema-to-zod": "catalog:",
     "@n8n/tournament": "1.0.6",
     "ast-types": "0.15.2",
     "axios": "catalog:",
@@ -52,6 +51,7 @@
     "form-data": "catalog:",
     "jmespath": "0.16.0",
     "js-base64": "3.7.2",
+    "json-schema-to-zod": "^2.6.1",
     "jssha": "3.3.1",
     "lodash": "catalog:",
     "luxon": "catalog:",

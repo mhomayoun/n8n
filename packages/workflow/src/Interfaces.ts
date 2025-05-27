@@ -12,7 +12,6 @@ import type { Readable } from 'stream';
 import type { SecureContextOptions } from 'tls';
 import type { URLSearchParams } from 'url';
 
-import { JSONSchema } from '@dmitryrechkin/json-schema-to-zod';
 import type { CODE_EXECUTION_MODES, CODE_LANGUAGES, LOG_LEVELS } from './Constants';
 import type { IDeferredPromise } from './DeferredPromise';
 import type { ExecutionCancelledError } from './errors';
@@ -1283,6 +1282,20 @@ export type NodePropertyAction = {
 	type: 'askAiCodeGeneration';
 	handler?: string;
 	target?: string;
+};
+
+export type JSONSchema = {
+	type?: string | string[];
+	properties?: Record<string, JSONSchema>;
+	items?: JSONSchema | JSONSchema[];
+	required?: string[];
+	enum?: Array<string | number>;
+	format?: string;
+	oneOf?: JSONSchema[];
+	allOf?: JSONSchema[];
+	anyOf?: JSONSchema[];
+	additionalProperties?: boolean | JSONSchema;
+	[key: string]: any;
 };
 
 export interface INodePropertyTypeOptions {

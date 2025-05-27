@@ -1,4 +1,4 @@
-//import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
+import jsonSchemaToZod from 'json-schema-to-zod';
 import { z } from 'zod';
 
 import type { INodeProperties, INodePropertyOptions, INodeType } from '.';
@@ -387,8 +387,13 @@ const nodeParameterToZodSchema = (
 ): z.ZodTypeAny => {
 	if (parameter.type === 'json') {
 		if (parameter.typeOptions?.jsonConfig?.schema) {
-			//return JSONSchemaToZod.convert(parameter.typeOptions.jsonConfig.schema);
-			throw new ParseError('JSON schema parsing is not supported yet');
+			return eval(
+				jsonSchemaToZod(parameter.typeOptions.jsonConfig.schema, {
+					module: 'cjs',
+					withoutDefaults: false,
+					withoutDescribes: false,
+				}),
+			) as z.ZodTypeAny;
 		}
 
 		if (parameter.typeOptions?.jsonConfig?.properties?.length) {

@@ -1,5 +1,5 @@
 import type { ZodArray, ZodEnum, ZodNullable, ZodNumber, ZodObject, ZodString } from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+// import zodToJsonSchema from 'zod-to-json-schema';
 
 import { extractFromAICalls, generateZodSchemaExtended } from '@/FromAIParseUtils';
 import type { INodeProperties, INodeType } from '@/index';
@@ -108,7 +108,7 @@ describe('Collection/option type parsing via generateZodSchemaExtended', () => {
 	});
 });
 
-describe('JSON Type Parsing via generateZodSchemaExtended', () => {
+describe('JSON Type Parsing via generateZodSchemaExtended from node properties', () => {
 	const stringField: INodeProperties = {
 		name: 'stringField',
 		displayName: 'String Field',
@@ -173,8 +173,10 @@ describe('JSON Type Parsing via generateZodSchemaExtended', () => {
 		const [arg] = extractFromAICalls('$fromAI("jsonField", "JSON field description", "json")');
 
 		const schema = generateZodSchemaExtended<ZodObject<any>>(node, arg);
-		console.log(JSON.stringify(zodToJsonSchema(schema), null, 2));
+		// console.log(JSON.stringify(zodToJsonSchema(schema), null, 2));
+
 		expect(schema._def.typeName).toBe('ZodObject');
+		expect(schema.description).toBe('JSON field description');
 
 		const numberFieldSchema = schema._def.shape().numberField as ZodNumber;
 		expect(numberFieldSchema._def.typeName).toBe('ZodNumber');
@@ -190,5 +192,76 @@ describe('JSON Type Parsing via generateZodSchemaExtended', () => {
 		expect(optionalDateFieldSchema._def.typeName).toBe('ZodNullable');
 		expect(optionalDateFieldSchema._def.innerType._def.typeName).toBe('ZodString');
 		expect(optionalDateFieldSchema.description).toBe(optionalDateField.description);
+	});
+});
+
+describe('JSON Type Parsing via generateZodSchemaExtended from json schema', () => {
+	const jsonField: INodeProperties = {
+		name: 'jsonField',
+		displayName: 'JSON Field',
+		type: 'json',
+		typeOptions: {
+			jsonConfig: {
+				schema: {
+					type: 'object',
+					properties: {
+						numberField: {
+							type: 'number',
+							minimum: 10,
+							maximum: 20,
+							description: 'Number field description',
+						},
+						dateField: {
+							type: 'string',
+							format: 'date-time',
+							description: 'Date field description',
+						},
+					},
+					required: ['numberField', 'dateField'],
+				},
+			},
+		},
+		default: '',
+		required: true,
+	};
+
+	const node: INodeType = {
+		description: {
+			displayName: 'Test Node',
+			name: 'testNode',
+			group: ['transform'],
+			version: 1,
+			description: 'Test node for parsing JSON types',
+			defaults: {
+				name: 'Test Node',
+				color: '#772244',
+			},
+			inputs: ['main'],
+			outputs: ['main'],
+			properties: [jsonField],
+		},
+	};
+
+	it('should convert JSON field with provided schema to Zod schema', () => {
+		const [arg] = extractFromAICalls('$fromAI("jsonField", "JSON field description", "json")');
+
+		const schema = generateZodSchemaExtended<ZodObject<any>>(node, arg);
+		// console.log(JSON.stringify(zodToJsonSchema(schema), null, 2));
+
+		const numberFieldSchema = schema._def.shape().numberField as ZodNumber;
+		expect(numberFieldSchema._def.typeName).toBe('ZodNumber');
+		expect(numberFieldSchema.minValue).toBe(
+			jsonField.typeOptions!.jsonConfig!.schema!.properties!.numberField.minimum,
+		);
+		expect(numberFieldSchema.maxValue).toBe(
+			jsonField.typeOptions!.jsonConfig!.schema!.properties!.numberField.maximum,
+		);
+		expect(numberFieldSchema.description).toBe(
+			jsonField.typeOptions!.jsonConfig!.schema!.properties!.numberField.description,
+		);
+
+		const dateFieldSchema = schema._def.shape().dateField as ZodString;
+		expect(dateFieldSchema._def.typeName).toBe('ZodString');
+		expect(dateFieldSchema._def.checks[0].kind).toBe('datetime');
 	});
 });
