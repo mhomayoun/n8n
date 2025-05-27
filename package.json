@@ -103,7 +103,6 @@
     }
   },
   "dependencies": {
-    "@dmitryrechkin/json-schema-to-zod": "catalog:",
     "extract-json-from-string": "^1.0.1",
     "zod-to-json-schema": "catalog:"
   }

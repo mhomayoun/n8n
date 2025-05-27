@@ -1,16 +1,17 @@
 import { Container, Service } from '@n8n/di';
 import jwt from 'jsonwebtoken';
+import type { StringValue } from 'ms';
+import type { IBinaryData, INodeExecutionData } from 'n8n-workflow';
 import { BINARY_ENCODING, UnexpectedError } from 'n8n-workflow';
-import type { INodeExecutionData, IBinaryData } from 'n8n-workflow';
 import { readFile, stat } from 'node:fs/promises';
 import prettyBytes from 'pretty-bytes';
 import type { Readable } from 'stream';
 
+import { InvalidManagerError } from '../errors/invalid-manager.error';
+import { InvalidModeError } from '../errors/invalid-mode.error';
 import { BinaryDataConfig } from './binary-data.config';
 import type { BinaryData } from './types';
 import { areConfigModes, binaryToBuffer } from './utils';
-import { InvalidManagerError } from '../errors/invalid-manager.error';
-import { InvalidModeError } from '../errors/invalid-mode.error';
 
 @Service()
 export class BinaryDataService {
@@ -45,7 +46,7 @@ export class BinaryDataService {
 		}
 	}
 
-	createSignedToken(binaryData: IBinaryData, expiresIn = '1 day') {
+	createSignedToken(binaryData: IBinaryData, expiresIn: StringValue = '1 day') {
 		if (!binaryData.id) {
 			throw new UnexpectedError('URL signing is not available in memory mode');
 		}

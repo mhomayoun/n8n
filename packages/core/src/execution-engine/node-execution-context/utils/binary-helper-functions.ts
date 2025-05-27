@@ -4,6 +4,7 @@ import FileType from 'file-type';
 import { IncomingMessage } from 'http';
 import iconv from 'iconv-lite';
 import { extension, lookup } from 'mime-types';
+import type { StringValue } from 'ms';
 import type {
 	BinaryHelperFunctions,
 	IBinaryData,
@@ -11,7 +12,7 @@ import type {
 	ITaskDataConnections,
 	IWorkflowExecuteAdditionalData,
 } from 'n8n-workflow';
-import { NodeOperationError, fileTypeFromMimeType, ApplicationError } from 'n8n-workflow';
+import { ApplicationError, NodeOperationError, fileTypeFromMimeType } from 'n8n-workflow';
 import path from 'path';
 import type { Readable } from 'stream';
 import { URL } from 'url';
@@ -279,7 +280,7 @@ export const getBinaryHelperFunctions = (
 	getBinaryMetadata,
 	binaryToBuffer,
 	binaryToString,
-	createBinarySignedUrl(binaryData: IBinaryData, expiresIn?: string) {
+	createBinarySignedUrl(binaryData: IBinaryData, expiresIn?: StringValue) {
 		const token = Container.get(BinaryDataService).createSignedToken(binaryData, expiresIn);
 		return `${restApiUrl}/binary-data/signed?token=${token}`;
 	},
