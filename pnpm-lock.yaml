@@ -47,6 +47,7 @@ overrides:
   esbuild: ^0.24.0
   pug: ^3.0.3
   semver: ^7.5.4
+  tar-fs: 2.1.2
   tslib: ^2.6.2
   tsconfig-paths: ^4.2.0
   typescript: ^5.8.2
@@ -1037,8 +1038,8 @@ importers:
         specifier: 'catalog:'
         version: 1.14.0
       '@n8n_io/license-sdk':
-        specifier: 2.20.1
-        version: 2.20.1
+        specifier: 2.21.0
+        version: 2.21.0
       '@oclif/core':
         specifier: 4.0.7
         version: 4.0.7
@@ -2460,7 +2461,11 @@ importers:
         version: 0.15.2
       axios:
         specifier: 'catalog:'
+<<<<<<< HEAD
         version: 1.8.3
+=======
+        version: 1.8.3(debug@4.3.6)
+>>>>>>> upstream/master
       callsites:
         specifier: 'catalog:'
         version: 3.1.0
@@ -4921,8 +4926,8 @@ packages:
     resolution: {integrity: sha512-apo1VXGmyUpwsBZ2dp9EyqZYR+FA3DzdD79MVzSMuknLIukhyZjvabBYRrjK5BJOU3vo5z9inaCm4UvenQ5Mgg==}
     engines: {node: '>=20.15', pnpm: '>=8.14'}
 
-  '@n8n_io/license-sdk@2.20.1':
-    resolution: {integrity: sha512-HrxdwlZw3MfYrfgvjxIGTyi3gJUCOFHtMcL5OpqpHhwfMGwuBauRgUOt63Twx4qs7f2bnz5yHV3jvuU3mF45UQ==}
+  '@n8n_io/license-sdk@2.21.0':
+    resolution: {integrity: sha512-xUqLf6ViWU4tn8PkODh7R8T4slqXLaWfFHHFKXHo71q8iZrU6m5T3aavFbJonqeC4ERu8vWYYdTqW8VGHq4fFw==}
     engines: {node: '>=18.12.1'}
 
   '@n8n_io/riot-tmpl@4.0.1':
@@ -12996,8 +13001,8 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tar-fs@2.1.1:
-    resolution: {integrity: sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==}
+  tar-fs@2.1.2:
+    resolution: {integrity: sha512-EsaAXwxmx8UB7FRKqeozqEPop69DXcmYwTQwXvyAPF352HJsPdkVhvTaDPYqfNgruveJIJy3TA2l+2zj8LJIJA==}
 
   tar-stream@2.2.0:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
@@ -17497,7 +17502,7 @@ snapshots:
 
   '@n8n_io/ai-assistant-sdk@1.14.0': {}
 
-  '@n8n_io/license-sdk@2.20.1':
+  '@n8n_io/license-sdk@2.21.0':
     dependencies:
       crypto-js: 4.2.0
       node-machine-id: 1.1.12
@@ -20460,7 +20465,11 @@ snapshots:
 
   axios@1.8.3:
     dependencies:
+<<<<<<< HEAD
       follow-redirects: 1.15.6
+=======
+      follow-redirects: 1.15.6(debug@4.3.6)
+>>>>>>> upstream/master
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -22116,7 +22125,7 @@ snapshots:
 
   eslint-import-resolver-node@0.3.9:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       is-core-module: 2.13.1
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -22141,7 +22150,7 @@ snapshots:
 
   eslint-module-utils@2.8.0(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     optionalDependencies:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.8.2)
       eslint: 8.57.0
@@ -22161,7 +22170,7 @@ snapshots:
       array.prototype.findlastindex: 1.2.3
       array.prototype.flat: 1.3.2
       array.prototype.flatmap: 1.3.2
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
@@ -22999,7 +23008,7 @@ snapshots:
       array-parallel: 0.1.3
       array-series: 0.1.5
       cross-spawn: 7.0.6
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -25863,7 +25872,7 @@ snapshots:
 
   pdf-parse@1.1.1:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
       node-ensure: 0.0.0
     transitivePeerDependencies:
       - supports-color
@@ -26106,7 +26115,7 @@ snapshots:
       pump: 3.0.0
       rc: 1.2.8
       simple-get: 4.0.1
-      tar-fs: 2.1.1
+      tar-fs: 2.1.2
       tunnel-agent: 0.6.0
 
   prelude-ls@1.1.2: {}
@@ -26702,7 +26711,7 @@ snapshots:
 
   rhea@1.0.24:
     dependencies:
-      debug: 3.2.7(supports-color@8.1.1)
+      debug: 3.2.7(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -27585,7 +27594,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tar-fs@2.1.1:
+  tar-fs@2.1.2:
     dependencies:
       chownr: 1.1.4
       mkdirp-classic: 0.5.3
