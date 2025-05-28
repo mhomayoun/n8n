@@ -1,7 +1,7 @@
 import jsonSchemaToZod from 'json-schema-to-zod';
 import { z } from 'zod';
 
-import type { INodeProperties, INodePropertyOptions, INodeType } from '.';
+import type { INodeProperties, INodePropertyOptions, INodeType } from './interfaces';
 import { jsonParse } from './utils';
 
 /**
