@@ -8,6 +8,15 @@ export const convertValueBySchema = (value: unknown, schema: any): unknown => {
 			return Number(value);
 		} else if (schema instanceof z.ZodBoolean) {
 			return value.toLowerCase() === 'true';
+		} else if (schema instanceof z.ZodArray) {
+			try {
+				const parsed = JSON.parse(value);
+				if (Array.isArray(parsed)) {
+					return parsed.map((item) => convertValueBySchema(item, schema.element));
+				}
+			} catch {
+				return value;
+			}
 		} else if (schema instanceof z.ZodObject) {
 			try {
 				const parsed = JSON.parse(value);

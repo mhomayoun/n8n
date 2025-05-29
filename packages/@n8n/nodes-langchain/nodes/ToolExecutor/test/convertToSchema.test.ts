@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { convertValueBySchema, convertObjectBySchema } from '../utils/convertToSchema';
+import { convertObjectBySchema, convertValueBySchema } from '../utils/convertToSchema';
 
 describe('convertToSchema', () => {
 	describe('convertValueBySchema', () => {
@@ -41,6 +41,7 @@ describe('convertToSchema', () => {
 			const schema = z.object({
 				numberValue: z.number(),
 				booleanValue: z.boolean(),
+				arrayValue: z.array(z.string()),
 				object: z.object({}),
 				unchanged: z.string(),
 			});
@@ -48,6 +49,7 @@ describe('convertToSchema', () => {
 			const input = {
 				numberValue: '42',
 				booleanValue: 'true',
+				arrayValue: '["item1", "item2"]',
 				object: '{"nested": "value"}',
 				unchanged: 'string value',
 			};
@@ -57,6 +59,7 @@ describe('convertToSchema', () => {
 			expect(result).toEqual({
 				numberValue: 42,
 				booleanValue: true,
+				arrayValue: ['item1', 'item2'],
 				object: { nested: 'value' },
 				unchanged: 'string value',
 			});
