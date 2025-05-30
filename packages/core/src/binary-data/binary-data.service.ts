@@ -1,7 +1,6 @@
 import { Container, Service } from '@n8n/di';
 import jwt from 'jsonwebtoken';
-import type { StringValue } from 'ms';
-import type { IBinaryData, INodeExecutionData } from 'n8n-workflow';
+import type { StringValue as TimeUnitValue } from 'ms';
 import { BINARY_ENCODING, UnexpectedError } from 'n8n-workflow';
 import { readFile, stat } from 'node:fs/promises';
 import prettyBytes from 'pretty-bytes';
@@ -46,7 +45,7 @@ export class BinaryDataService {
 		}
 	}
 
-	createSignedToken(binaryData: IBinaryData, expiresIn: StringValue = '1 day') {
+	createSignedToken(binaryData: IBinaryData, expiresIn: TimeUnitValue = '1 day') {
 		if (!binaryData.id) {
 			throw new UnexpectedError('URL signing is not available in memory mode');
 		}

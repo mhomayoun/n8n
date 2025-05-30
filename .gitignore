@@ -26,3 +26,4 @@ build-storybook.log
 junit.xml
 test-results.json
 /.github/workflows/
+*.0x
