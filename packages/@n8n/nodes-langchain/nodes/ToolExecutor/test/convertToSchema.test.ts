@@ -16,6 +16,11 @@ describe('convertToSchema', () => {
 			expect(convertValueBySchema('FALSE', z.boolean())).toBe(false);
 		});
 
+		it('should convert string to array when schema is ZodArray', () => {
+			const result = convertValueBySchema('["item 1", "item 2"]', z.array(z.string()));
+			expect(result).toEqual(['item 1', 'item 2']);
+		});
+
 		it('should parse JSON string when schema is ZodObject', () => {
 			const result = convertValueBySchema(
 				'{"key": "value", "other_key": 1, "booleanValue": false }',

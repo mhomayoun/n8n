@@ -113,7 +113,8 @@ function createTool(options: CreateNodeAsToolOptions) {
 		name,
 		description,
 		schema,
-		func: async (toolArgs: z.infer<typeof schema>) => await handleToolInvocation(toolArgs),
+		func: async (toolArgs: z.infer<typeof schema>) =>
+			await handleToolInvocation(toolArgs as IDataObject),
 	});
 }
 

@@ -1,7 +1,7 @@
 import type { ZodArray, ZodEnum, ZodNullable, ZodNumber, ZodObject, ZodString } from 'zod';
 // import zodToJsonSchema from 'zod-to-json-schema';
 
-import { extractFromAICalls, generateZodSchemaExtended } from '@/FromAIParseUtils';
+import { extractFromAICalls, generateZodSchemaExtended } from '@/from-ai-parse-utils';
 import type { INodeProperties, INodeType } from '@/index';
 
 describe('Collection/option type parsing via generateZodSchemaExtended', () => {
