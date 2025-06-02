@@ -1,6 +1,7 @@
 import { Container, Service } from '@n8n/di';
 import jwt from 'jsonwebtoken';
 import type { StringValue as TimeUnitValue } from 'ms';
+import type { IBinaryData, INodeExecutionData } from 'n8n-workflow';
 import { BINARY_ENCODING, UnexpectedError } from 'n8n-workflow';
 import { readFile, stat } from 'node:fs/promises';
 import prettyBytes from 'pretty-bytes';
