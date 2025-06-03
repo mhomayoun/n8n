@@ -9,7 +9,11 @@ const validateToolSchema = async (tool: StructuredTool, query: object): Promise<
 	if (!result.success) {
 		const pretty = z.prettifyError(result.error);
 		const flatten = result.error.issues;
-		console.log('Tool schema validation failed:', JSON.stringify(result.error.issues, null, 2));
+		console.log(
+			'Tool schema validation failed:',
+			JSON.stringify(result.error.issues, null, 2),
+			query,
+		);
 		throw new OperationalError(`Tool schema validation failed: ${pretty}`, {
 			description: 'The provided input does not match the tool schema.',
 			extra: {
