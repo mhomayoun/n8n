@@ -417,6 +417,9 @@ const nodeParameterToZodSchema = (
 
 	if (parameter.type === 'number') {
 		let schema = z.number();
+		if (parameter.typeOptions?.numberPrecision !== undefined) {
+			schema = schema.step(parameter.typeOptions.numberPrecision);
+		}
 		if (parameter.typeOptions?.minValue !== undefined) {
 			schema = schema.min(parameter.typeOptions.minValue);
 		}
