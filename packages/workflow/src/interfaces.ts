@@ -1895,6 +1895,7 @@ export const NodeConnectionTypes = {
 	AiMemory: 'ai_memory',
 	AiOutputParser: 'ai_outputParser',
 	AiRetriever: 'ai_retriever',
+	AiReranker: 'ai_reranker',
 	AiTextSplitter: 'ai_textSplitter',
 	AiTool: 'ai_tool',
 	AiVectorStore: 'ai_vectorStore',
@@ -1905,20 +1906,7 @@ export type NodeConnectionType = (typeof NodeConnectionTypes)[keyof typeof NodeC
 
 export type AINodeConnectionType = Exclude<NodeConnectionType, typeof NodeConnectionTypes.Main>;
 
-export const nodeConnectionTypes: NodeConnectionType[] = [
-	NodeConnectionTypes.AiAgent,
-	NodeConnectionTypes.AiChain,
-	NodeConnectionTypes.AiDocument,
-	NodeConnectionTypes.AiEmbedding,
-	NodeConnectionTypes.AiLanguageModel,
-	NodeConnectionTypes.AiMemory,
-	NodeConnectionTypes.AiOutputParser,
-	NodeConnectionTypes.AiRetriever,
-	NodeConnectionTypes.AiTextSplitter,
-	NodeConnectionTypes.AiTool,
-	NodeConnectionTypes.AiVectorStore,
-	NodeConnectionTypes.Main,
-];
+export const nodeConnectionTypes: NodeConnectionType[] = Object.values(NodeConnectionTypes);
 
 export interface INodeInputFilter {
 	// TODO: Later add more filter options like categories, subcatogries,
@@ -2357,6 +2345,7 @@ export type AiEvent =
 	| 'ai-message-added-to-memory'
 	| 'ai-output-parsed'
 	| 'ai-documents-retrieved'
+	| 'ai-document-reranked'
 	| 'ai-document-embedded'
 	| 'ai-query-embedded'
 	| 'ai-document-processed'
@@ -2409,7 +2398,6 @@ export interface IWorkflowExecuteAdditionalData {
 	executionTimeoutTimestamp?: number;
 	userId?: string;
 	variables: IDataObject;
-	secretsHelpers: SecretsHelpersBase;
 	logAiEvent: (eventName: AiEvent, payload: AiEventPayload) => void;
 	parentCallbackManager?: CallbackManager;
 	startRunnerTask<T, E = unknown>(
@@ -2904,17 +2892,6 @@ export interface ICheckProcessedContextData {
 }
 
 export type N8nAIProviderType = 'openai' | 'unknown';
-
-export interface SecretsHelpersBase {
-	update(): Promise<void>;
-	waitForInit(): Promise<void>;
-
-	getSecret(provider: string, name: string): unknown;
-	hasSecret(provider: string, name: string): boolean;
-	hasProvider(provider: string): boolean;
-	listProviders(): string[];
-	listSecrets(provider: string): string[];
-}
 
 export type Functionality = 'regular' | 'configuration-node' | 'pairedItem';
 

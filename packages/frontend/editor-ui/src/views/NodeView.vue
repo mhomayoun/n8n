@@ -161,7 +161,8 @@ const externalHooks = useExternalHooks();
 const toast = useToast();
 const message = useMessage();
 const documentTitle = useDocumentTitle();
-const workflowHelpers = useWorkflowHelpers({ router });
+const workflowHelpers = useWorkflowHelpers();
+const workflowSaving = useWorkflowSaving({ router });
 const nodeHelpers = useNodeHelpers();
 
 const nodeTypesStore = useNodeTypesStore();
@@ -237,7 +238,7 @@ const {
 	editableWorkflowObject,
 	lastClickPosition,
 	startChat,
-} = useCanvasOperations({ router });
+} = useCanvasOperations();
 const { extractWorkflow } = useWorkflowExtraction();
 const { applyExecutionData } = useExecutionDebugging();
 useClipboard({ onPaste: onClipboardPaste });
@@ -818,7 +819,7 @@ async function onSaveWorkflow() {
 	if (workflowIsSaved || workflowIsArchived) {
 		return;
 	}
-	const saved = await workflowHelpers.saveCurrentWorkflow();
+	const saved = await workflowSaving.saveCurrentWorkflow();
 	if (saved) {
 		canvasEventBus.emit('saved:workflow');
 	}
@@ -856,6 +857,13 @@ function onRenameNode(parameterData: IUpdateInformation) {
 
 async function onOpenRenameNodeModal(id: string) {
 	const currentName = workflowsStore.getNodeById(id)?.name ?? '';
+
+	const activeElement = document.activeElement;
+
+	if (activeElement && activeElement.tagName === 'INPUT') {
+		// If an input is focused, do not open the rename modal
+		return;
+	}
 
 	if (!keyBindingsEnabled.value || document.querySelector('.rename-prompt')) return;
 
