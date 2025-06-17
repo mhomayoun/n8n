@@ -1,5 +1,6 @@
 import type { InsightsDateRange } from '@n8n/api-types';
 import type { LicenseState } from '@n8n/backend-common';
+import { mockLogger } from '@n8n/backend-test-utils';
 import type { Project } from '@n8n/db';
 import type { WorkflowEntity } from '@n8n/db';
 import type { IWorkflowDb } from '@n8n/db';
@@ -11,10 +12,10 @@ import { DateTime } from 'luxon';
 import type { InstanceSettings } from 'n8n-core';
 import type { IRun } from 'n8n-workflow';
 
-import { mockLogger } from '@test/mocking';
 import { createTeamProject } from '@test-integration/db/projects';
 import { createWorkflow } from '@test-integration/db/workflows';
 import * as testDb from '@test-integration/test-db';
+import * as testModules from '@test-integration/test-modules';
 
 import {
 	createCompactedInsightsEvent,
@@ -25,12 +26,13 @@ import type { InsightsRaw } from '../database/entities/insights-raw';
 import type { InsightsByPeriodRepository } from '../database/repositories/insights-by-period.repository';
 import { InsightsCollectionService } from '../insights-collection.service';
 import { InsightsCompactionService } from '../insights-compaction.service';
+import { getAvailableDateRanges } from '../insights-helpers';
 import type { InsightsPruningService } from '../insights-pruning.service';
 import { InsightsConfig } from '../insights.config';
 import { InsightsService } from '../insights.service';
 
-// Initialize DB once for all tests
 beforeAll(async () => {
+	await testModules.load(['insights']);
 	await testDb.init();
 });
 
@@ -581,27 +583,17 @@ describe('getInsightsByTime', () => {
 });
 
 describe('getAvailableDateRanges', () => {
-	let insightsService: InsightsService;
 	let licenseMock: jest.Mocked<LicenseState>;
 
 	beforeAll(() => {
 		licenseMock = mock<LicenseState>();
-		insightsService = new InsightsService(
-			mock<InsightsByPeriodRepository>(),
-			mock<InsightsCompactionService>(),
-			mock<InsightsCollectionService>(),
-			mock<InsightsPruningService>(),
-			licenseMock,
-			mock<InstanceSettings>(),
-			mockLogger(),
-		);
 	});
 
 	test('returns correct ranges when hourly data is enabled and max history is unlimited', () => {
 		licenseMock.getInsightsMaxHistory.mockReturnValue(-1);
 		licenseMock.isInsightsHourlyDataLicensed.mockReturnValue(true);
 
-		const result = insightsService.getAvailableDateRanges();
+		const result = getAvailableDateRanges(licenseMock);
 
 		expect(result).toEqual([
 			{ key: 'day', licensed: true, granularity: 'hour' },
@@ -618,7 +610,7 @@ describe('getAvailableDateRanges', () => {
 		licenseMock.getInsightsMaxHistory.mockReturnValue(365);
 		licenseMock.isInsightsHourlyDataLicensed.mockReturnValue(true);
 
-		const result = insightsService.getAvailableDateRanges();
+		const result = getAvailableDateRanges(licenseMock);
 
 		expect(result).toEqual([
 			{ key: 'day', licensed: true, granularity: 'hour' },
@@ -635,7 +627,7 @@ describe('getAvailableDateRanges', () => {
 		licenseMock.getInsightsMaxHistory.mockReturnValue(30);
 		licenseMock.isInsightsHourlyDataLicensed.mockReturnValue(false);
 
-		const result = insightsService.getAvailableDateRanges();
+		const result = getAvailableDateRanges(licenseMock);
 
 		expect(result).toEqual([
 			{ key: 'day', licensed: false, granularity: 'hour' },
@@ -652,7 +644,7 @@ describe('getAvailableDateRanges', () => {
 		licenseMock.getInsightsMaxHistory.mockReturnValue(5);
 		licenseMock.isInsightsHourlyDataLicensed.mockReturnValue(false);
 
-		const result = insightsService.getAvailableDateRanges();
+		const result = getAvailableDateRanges(licenseMock);
 
 		expect(result).toEqual([
 			{ key: 'day', licensed: false, granularity: 'hour' },
@@ -669,7 +661,7 @@ describe('getAvailableDateRanges', () => {
 		licenseMock.getInsightsMaxHistory.mockReturnValue(90);
 		licenseMock.isInsightsHourlyDataLicensed.mockReturnValue(true);
 
-		const result = insightsService.getAvailableDateRanges();
+		const result = getAvailableDateRanges(licenseMock);
 
 		expect(result).toEqual([
 			{ key: 'day', licensed: true, granularity: 'hour' },
