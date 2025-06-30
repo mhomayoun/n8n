@@ -8,7 +8,13 @@ import { jsonParse } from './utils';
  * This file contains the logic for parsing node parameters and extracting $fromAI calls
  */
 
-export type FromAIArgumentType = 'string' | 'number' | 'boolean' | 'json';
+export type FromAIArgumentType =
+	| 'string'
+	| 'number'
+	| 'boolean'
+	| 'json'
+	| 'options'
+	| 'multiOptions';
 export type FromAIArgument = {
 	key: string;
 	description?: string;

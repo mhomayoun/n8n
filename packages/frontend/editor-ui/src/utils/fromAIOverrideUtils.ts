@@ -1,12 +1,13 @@
+import type { INodeUi } from '@/Interface';
+import { useNodeTypesStore } from '@/stores/nodeTypes.store';
+import { i18n } from '@n8n/i18n';
 import {
 	extractFromAICalls,
 	FROM_AI_AUTO_GENERATED_MARKER,
+	INodePropertyAsToolOptions,
 	type NodeParameterValueType,
 	type NodePropertyTypes,
 } from 'n8n-workflow';
-import { i18n } from '@n8n/i18n';
-import type { INodeUi } from '@/Interface';
-import { useNodeTypesStore } from '@/stores/nodeTypes.store';
 
 export type OverrideContext = {
 	parameter: {
@@ -15,6 +16,7 @@ export type OverrideContext = {
 		type: NodePropertyTypes;
 		noDataExpression?: boolean;
 		typeOptions?: { editor?: string };
+		asToolOptions?: INodePropertyAsToolOptions;
 	};
 	value: NodeParameterValueType;
 	path: string;
@@ -207,7 +209,8 @@ export function canBeContentOverride(
 
 	if (PATH_DENYLIST.includes(props.path)) return false;
 
-	if (PROP_TYPE_DENYLIST.includes(props.parameter.type)) return false;
+	if (PROP_TYPE_DENYLIST.includes(props.parameter.type) && !props.parameter.asToolOptions)
+		return false;
 
 	const nodeType = useNodeTypesStore().getNodeType(node.type, node?.typeVersion);
 	const codex = nodeType?.codex;
