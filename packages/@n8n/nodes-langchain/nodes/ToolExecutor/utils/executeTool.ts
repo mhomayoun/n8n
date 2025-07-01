@@ -10,7 +10,7 @@ const validateToolSchema = async (tool: Tool, query: object): Promise<void> => {
 		const pretty = z.prettifyError(result.error);
 		const flatten = result.error.issues;
 		console.log(
-			'Tool schema validation failed:',
+			'🚩 Tool schema validation failed:',
 			JSON.stringify(result.error.issues, null, 2),
 			query,
 		);

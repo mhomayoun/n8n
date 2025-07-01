@@ -15,6 +15,7 @@ export const convertValueBySchema = (value: unknown, schema: any): unknown => {
 					return parsed.map((item) => convertValueBySchema(item, schema.element));
 				}
 			} catch {
+				console.error('🚩 Failed to parse array from string:', value);
 				return value;
 			}
 		} else if (schema instanceof z.ZodObject) {
