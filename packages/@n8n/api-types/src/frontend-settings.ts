@@ -5,6 +5,8 @@ import { type InsightsDateRange } from './schemas/insights.schema';
 export interface IVersionNotificationSettings {
 	enabled: boolean;
 	endpoint: string;
+	whatsNewEnabled: boolean;
+	whatsNewEndpoint: string;
 	infoUrl: string;
 }
 
@@ -196,8 +198,8 @@ export interface FrontendSettings {
 		quota: number;
 	};
 
-	/** Backend modules that were loaded during startup based on user configuration and pre-init check. */
-	loadedModules: string[];
+	/** Backend modules that were initialized during startup. */
+	activeModules: string[];
 }
 
 export type FrontendModuleSettings = {

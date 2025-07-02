@@ -7,15 +7,14 @@ import type {
 	AddedNodesAndConnections,
 	IExecutionResponse,
 	INodeUi,
-	ITag,
 	IUsedCredential,
-	IWorkflowData,
-	IWorkflowDataUpdate,
 	IWorkflowDb,
-	IWorkflowTemplate,
 	WorkflowDataWithTemplateId,
 	XYPosition,
 } from '@/Interface';
+import type { ITag } from '@n8n/rest-api-client/api/tags';
+import type { IWorkflowTemplate } from '@n8n/rest-api-client/api/templates';
+import type { WorkflowData, WorkflowDataUpdate } from '@n8n/rest-api-client/api/workflows';
 import { useDataSchema } from '@/composables/useDataSchema';
 import { useExternalHooks } from '@/composables/useExternalHooks';
 import { useI18n } from '@n8n/i18n';
@@ -189,15 +188,11 @@ export function useCanvasOperations() {
 	}
 
 	function trackTidyUp({ result, source, target }: CanvasLayoutEvent) {
-		telemetry.track(
-			'User tidied up canvas',
-			{
-				source,
-				target,
-				nodes_count: result.nodes.length,
-			},
-			{ withPostHog: true },
-		);
+		telemetry.track('User tidied up canvas', {
+			source,
+			target,
+			nodes_count: result.nodes.length,
+		});
 	}
 
 	function updateNodesPosition(
@@ -1532,7 +1527,10 @@ export function useCanvasOperations() {
 			if (inputType !== targetConnection.type) return false;
 
 			const filter = typeof input === 'object' && 'filter' in input ? input.filter : undefined;
-			if (filter?.nodes.length && !filter.nodes.includes(sourceNode.type)) {
+			if (
+				(filter?.nodes?.length && !filter.nodes?.includes(sourceNode.type)) ||
+				(filter?.excludedNodes?.length && filter.excludedNodes?.includes(sourceNode.type))
+			) {
 				toast.showToast({
 					title: i18n.baseText('nodeView.showError.nodeNodeCompatible.title'),
 					message: i18n.baseText('nodeView.showError.nodeNodeCompatible.message', {
@@ -1627,7 +1625,7 @@ export function useCanvasOperations() {
 	 * Import operations
 	 */
 
-	function removeUnknownCredentials(workflow: IWorkflowDataUpdate) {
+	function removeUnknownCredentials(workflow: WorkflowDataUpdate) {
 		if (!workflow?.nodes) return;
 
 		for (const node of workflow.nodes) {
@@ -1644,9 +1642,9 @@ export function useCanvasOperations() {
 	}
 
 	async function addImportedNodesToWorkflow(
-		data: IWorkflowDataUpdate,
+		data: WorkflowDataUpdate,
 		{ trackBulk = true, trackHistory = false, viewport = DEFAULT_VIEWPORT_BOUNDARIES } = {},
-	): Promise<IWorkflowDataUpdate> {
+	): Promise<WorkflowDataUpdate> {
 		// Because nodes with the same name maybe already exist, it could
 		// be needed that they have to be renamed. Also could it be possible
 		// that nodes are not allowed to be created because they have a create
@@ -1818,7 +1816,7 @@ export function useCanvasOperations() {
 	}
 
 	async function importWorkflowData(
-		workflowData: IWorkflowDataUpdate,
+		workflowData: WorkflowDataUpdate,
 		source: string,
 		{
 			importTags = true,
@@ -1831,7 +1829,7 @@ export function useCanvasOperations() {
 			trackHistory?: boolean;
 			viewport?: ViewportBoundaries;
 		} = {},
-	): Promise<IWorkflowDataUpdate> {
+	): Promise<WorkflowDataUpdate> {
 		uiStore.resetLastInteractedWith();
 
 		// If it is JSON check if it looks on the first look like data we can use
@@ -1947,7 +1945,7 @@ export function useCanvasOperations() {
 		}
 	}
 
-	async function importWorkflowTags(workflowData: IWorkflowDataUpdate) {
+	async function importWorkflowTags(workflowData: WorkflowDataUpdate) {
 		const allTags = await tagsStore.fetchAll();
 		const tagNames = new Set(allTags.map((tag) => tag.name));
 
@@ -1978,8 +1976,8 @@ export function useCanvasOperations() {
 		workflowsStore.addWorkflowTagIds(tagIds);
 	}
 
-	async function fetchWorkflowDataFromUrl(url: string): Promise<IWorkflowDataUpdate | undefined> {
-		let workflowData: IWorkflowDataUpdate;
+	async function fetchWorkflowDataFromUrl(url: string): Promise<WorkflowDataUpdate | undefined> {
+		let workflowData: WorkflowDataUpdate;
 
 		canvasStore.startLoading();
 		try {
@@ -1994,12 +1992,12 @@ export function useCanvasOperations() {
 		return workflowData;
 	}
 
-	function getNodesToSave(nodes: INode[]): IWorkflowData {
+	function getNodesToSave(nodes: INode[]): WorkflowData {
 		const data = {
 			nodes: [] as INodeUi[],
 			connections: {} as IConnections,
 			pinData: {} as IPinData,
-		} satisfies IWorkflowData;
+		} satisfies WorkflowData;
 
 		const exportedNodeNames = new Set<string>();
 

@@ -3,6 +3,7 @@ import {
 	type PasswordUpdateRequestDto,
 	type SettingsUpdateRequestDto,
 	type UserUpdateRequestDto,
+	type User,
 	ROLE,
 } from '@n8n/api-types';
 import type { UpdateGlobalRolePayload } from '@/api/users';
@@ -17,49 +18,40 @@ import type {
 	CurrentUserResponse,
 	InvitableRoleName,
 } from '@/Interface';
-import type { Cloud } from '@n8n/rest-api-client/api/cloudPlans';
 import { getPersonalizedNodeTypes } from '@/utils/userUtils';
 import { defineStore } from 'pinia';
 import { useRootStore } from '@n8n/stores/useRootStore';
-import { usePostHog } from './posthog.store';
 import { useUIStore } from './ui.store';
-import { useCloudPlanStore } from './cloudPlan.store';
 import * as mfaApi from '@n8n/rest-api-client/api/mfa';
 import * as cloudApi from '@n8n/rest-api-client/api/cloudPlans';
-import { useRBACStore } from '@/stores/rbac.store';
-import type { Scope } from '@n8n/permissions';
 import * as invitationsApi from '@/api/invitation';
-import { useNpsSurveyStore } from './npsSurvey.store';
 import { computed, ref } from 'vue';
-import { useTelemetry } from '@/composables/useTelemetry';
 import { useSettingsStore } from '@/stores/settings.store';
 import * as onboardingApi from '@/api/workflow-webhooks';
+import * as promptsApi from '@n8n/rest-api-client/api/prompts';
 
 const _isPendingUser = (user: IUserResponse | null) => !!user?.isPending;
 const _isInstanceOwner = (user: IUserResponse | null) => user?.role === ROLE.Owner;
 const _isDefaultUser = (user: IUserResponse | null) =>
 	_isInstanceOwner(user) && _isPendingUser(user);
 
+type LoginHook = (user: CurrentUserResponse) => void;
+type LogoutHook = () => void;
+
 export const useUsersStore = defineStore(STORES.USERS, () => {
 	const initialized = ref(false);
 	const currentUserId = ref<string | null>(null);
 	const usersById = ref<Record<string, IUser>>({});
-	const currentUserCloudInfo = ref<Cloud.UserAccount | null>(null);
+	const userQuota = ref<number>(-1);
+
+	const loginHooks = ref<LoginHook[]>([]);
+	const logoutHooks = ref<LogoutHook[]>([]);
 
 	// Stores
 
-	const RBACStore = useRBACStore();
-	const npsSurveyStore = useNpsSurveyStore();
 	const uiStore = useUIStore();
 	const rootStore = useRootStore();
 	const settingsStore = useSettingsStore();
-	const cloudPlanStore = useCloudPlanStore();
-
-	const telemetry = useTelemetry();
-
-	// Composables
-
-	const postHogStore = usePostHog();
 
 	// Computed
 
@@ -117,10 +109,14 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		return getPersonalizedNodeTypes(answers);
 	});
 
+	const usersLimitNotReached = computed(
+		(): boolean => userQuota.value === -1 || userQuota.value > allUsers.value.length,
+	);
+
 	// Methods
 
-	const addUsers = (newUsers: IUserResponse[]) => {
-		newUsers.forEach((userResponse: IUserResponse) => {
+	const addUsers = (newUsers: User[]) => {
+		newUsers.forEach((userResponse) => {
 			const prevUser = usersById.value[userResponse.id] || {};
 			const updatedUser = {
 				...prevUser,
@@ -146,11 +142,13 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		addUsers([user]);
 		currentUserId.value = user.id;
 
-		const defaultScopes: Scope[] = [];
-		RBACStore.setGlobalScopes(user.globalScopes || defaultScopes);
-		telemetry.identify(rootStore.instanceId, user.id);
-		postHogStore.init(user.featureFlags);
-		npsSurveyStore.setupNpsSurveyOnLogin(user.id, user.settings);
+		for (const hook of loginHooks.value) {
+			try {
+				hook(user);
+			} catch (error) {
+				console.error('Error executing login hook:', error);
+			}
+		}
 	};
 
 	const loginWithCookie = async () => {
@@ -162,9 +160,13 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		setCurrentUser(user);
 	};
 
-	const initialize = async () => {
+	const initialize = async (options: { quota?: number } = {}) => {
 		if (initialized.value) {
 			return;
+		}
+
+		if (typeof options.quota !== 'undefined') {
+			userQuota.value = options.quota;
 		}
 
 		try {
@@ -175,9 +177,6 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 
 	const unsetCurrentUser = () => {
 		currentUserId.value = null;
-		currentUserCloudInfo.value = null;
-		telemetry.reset();
-		RBACStore.setGlobalScopes([]);
 	};
 
 	const deleteUserById = (userId: string) => {
@@ -208,13 +207,26 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		setCurrentUser(user);
 	};
 
+	const registerLoginHook = (hook: LoginHook) => {
+		loginHooks.value.push(hook);
+	};
+
+	const registerLogoutHook = (hook: LogoutHook) => {
+		logoutHooks.value.push(hook);
+	};
+
 	const logout = async () => {
 		await usersApi.logout(rootStore.restApiContext);
+
 		unsetCurrentUser();
-		cloudPlanStore.reset();
-		postHogStore.reset();
-		uiStore.clearBannerStack();
-		npsSurveyStore.resetNpsSurveyOnLogOut();
+
+		for (const hook of logoutHooks.value) {
+			try {
+				hook();
+			} catch (error) {
+				console.error('Error executing logout hook:', error);
+			}
+		}
 
 		localStorage.removeItem(BROWSER_ID_STORAGE_KEY);
 	};
@@ -309,8 +321,8 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 	};
 
 	const fetchUsers = async () => {
-		const users = await usersApi.getUsers(rootStore.restApiContext);
-		addUsers(users);
+		const { items } = await usersApi.getUsers(rootStore.restApiContext, { take: -1, skip: 0 });
+		addUsers(items);
 	};
 
 	const inviteUsers = async (params: Array<{ email: string; role: InvitableRoleName }>) => {
@@ -376,16 +388,6 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		}
 	};
 
-	const fetchUserCloudAccount = async () => {
-		let cloudUser: Cloud.UserAccount | null = null;
-		try {
-			cloudUser = await cloudApi.getCloudUserInfo(rootStore.restApiContext);
-			currentUserCloudInfo.value = cloudUser;
-		} catch (error) {
-			throw new Error(error);
-		}
-	};
-
 	const sendConfirmationEmail = async () => {
 		await cloudApi.sendConfirmationEmail(rootStore.restApiContext);
 	};
@@ -393,13 +395,6 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 	const updateGlobalRole = async ({ id, newRoleName }: UpdateGlobalRolePayload) => {
 		await usersApi.updateGlobalRole(rootStore.restApiContext, { id, newRoleName });
 		await fetchUsers();
-	};
-
-	const reset = () => {
-		initialized.value = false;
-		currentUserId.value = null;
-		usersById.value = {};
-		currentUserCloudInfo.value = null;
 	};
 
 	const submitContactEmail = async (email: string, agree: boolean) => {
@@ -414,11 +409,22 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		return null;
 	};
 
+	const submitContactInfo = async (email: string) => {
+		try {
+			return await promptsApi.submitContactInfo(
+				rootStore.instanceId,
+				currentUserId.value ?? '',
+				email,
+			);
+		} catch (error) {
+			return;
+		}
+	};
+
 	return {
 		initialized,
 		currentUserId,
 		usersById,
-		currentUserCloudInfo,
 		allUsers,
 		currentUser,
 		userActivated,
@@ -429,12 +435,15 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		personalizedNodeTypes,
 		userClaimedAiCredits,
 		isEasyAIWorkflowOnboardingDone,
+		usersLimitNotReached,
 		addUsers,
 		loginWithCookie,
 		initialize,
 		setPersonalizationAnswers,
 		loginWithCreds,
 		logout,
+		registerLoginHook,
+		registerLogoutHook,
 		createOwner,
 		validateSignupToken,
 		acceptInvitation,
@@ -458,13 +467,12 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		enableMfa,
 		disableMfa,
 		canEnableMFA,
-		fetchUserCloudAccount,
 		sendConfirmationEmail,
 		updateGlobalRole,
-		reset,
 		setEasyAIWorkflowOnboardingDone,
 		isCalloutDismissed,
 		setCalloutDismissed,
 		submitContactEmail,
+		submitContactInfo,
 	};
 });

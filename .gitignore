@@ -27,3 +27,11 @@ junit.xml
 test-results.json
 /.github/workflows/
 *.0x
+packages/testing/playwright/playwright-report
+packages/testing/playwright/test-results
+packages/testing/playwright/ms-playwright-cache
+test-results/
+compiled_app_output
+trivy_report*
+compiled
+jest.config.js

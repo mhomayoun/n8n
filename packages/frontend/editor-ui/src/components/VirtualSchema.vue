@@ -407,7 +407,7 @@ const onDragEnd = (el: HTMLElement) => {
 
 		void useExternalHooks().run('runDataJson.onDragEnd', telemetryPayload);
 
-		telemetry.track('User dragged data for mapping', telemetryPayload, { withPostHog: true });
+		telemetry.track('User dragged data for mapping', telemetryPayload);
 	}, 250); // ensure dest data gets set if drop
 };
 </script>
@@ -473,7 +473,7 @@ const onDragEnd = (el: HTMLElement) => {
 						</VirtualSchemaItem>
 
 						<N8nTooltip v-else-if="item.type === 'icon'" :content="item.tooltip" placement="top">
-							<N8nIcon :size="14" :icon="item.icon" class="icon" />
+							<N8nIcon size="small" :icon="item.icon" class="icon" />
 						</N8nTooltip>
 
 						<div

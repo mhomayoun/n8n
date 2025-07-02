@@ -104,6 +104,8 @@ export const defaultSettings: FrontendSettings = {
 		enabled: true,
 		endpoint: '',
 		infoUrl: '',
+		whatsNewEnabled: true,
+		whatsNewEndpoint: '',
 	},
 	workflowCallerPolicyDefaultOption: 'any',
 	workflowTagsDisabled: false,
@@ -148,5 +150,5 @@ export const defaultSettings: FrontendSettings = {
 	evaluation: {
 		quota: 0,
 	},
-	loadedModules: [],
+	activeModules: [],
 };
