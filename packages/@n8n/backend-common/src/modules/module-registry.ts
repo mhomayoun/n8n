@@ -56,6 +56,11 @@ export class ModuleRegistry {
 			const n8nRoot = path.dirname(n8nPackagePath);
 			const dir = process.env.NODE_ENV === 'test' ? 'src' : 'dist';
 			modulesDir = path.join(n8nRoot, dir, 'modules');
+			await import('fs').then((fs) => {
+				if (!fs.existsSync(modulesDir)) {
+					throw new Error(`Modules directory does not exist: ${modulesDir}`);
+				}
+			});
 		} catch {
 			// local dev
 			modulesDir = path.resolve(__dirname, '../../../../cli/dist/modules');
