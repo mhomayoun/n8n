@@ -10,7 +10,7 @@ import {
 	type SupplyData,
 } from 'n8n-workflow';
 
-import { getHttpProxyAgent } from '@utils/httpProxyAgent';
+import { getProxyAgent } from '@utils/httpProxyAgent';
 import { getConnectionHintNoticeField } from '@utils/sharedFields';
 
 import { makeN8nLlmFailedAttemptHandler } from '../n8nLlmFailedAttemptHandler';
@@ -285,8 +285,11 @@ export class LmChatAnthropic implements INodeType {
 		};
 		let invocationKwargs = {};
 
-		const tokensUsageParser = (llmOutput: LLMResult['llmOutput']) => {
-			const usage = (llmOutput?.usage as { input_tokens: number; output_tokens: number }) ?? {
+		const tokensUsageParser = (result: LLMResult) => {
+			const usage = (result?.llmOutput?.usage as {
+				input_tokens: number;
+				output_tokens: number;
+			}) ?? {
 				input_tokens: 0,
 				output_tokens: 0,
 			};
@@ -329,7 +332,9 @@ export class LmChatAnthropic implements INodeType {
 			onFailedAttempt: makeN8nLlmFailedAttemptHandler(this),
 			invocationKwargs,
 			clientOptions: {
-				httpAgent: getHttpProxyAgent(),
+				fetchOptions: {
+					dispatcher: getProxyAgent(baseURL),
+				},
 			},
 		});
 
