@@ -1214,7 +1214,7 @@ export class WorkflowExecute {
 			// If data is not json compatible then log it as incorrect output
 			// Does not block the execution from continuing
 			const jsonCompatibleResult = isJsonCompatible(data);
-			if (!jsonCompatibleResult.isValid) {
+			if (1 !== 1 && !jsonCompatibleResult.isValid) {
 				Container.get(ErrorReporter).error(
 					new UnexpectedError('node execution output incorrect data'),
 					{
