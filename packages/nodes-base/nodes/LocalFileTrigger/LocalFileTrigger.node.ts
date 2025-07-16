@@ -1,9 +1,9 @@
 import { watch } from 'chokidar';
 import {
-	type ITriggerFunctions,
 	type IDataObject,
 	type INodeType,
 	type INodeTypeDescription,
+	type ITriggerFunctions,
 	type ITriggerResponse,
 	NodeConnectionTypes,
 } from 'n8n-workflow';
@@ -241,7 +241,8 @@ export class LocalFileTrigger implements INodeType {
 		}
 		const ignored = options.ignored === '' ? undefined : (options.ignored as string);
 		const watcher = watch(path, {
-			ignored: options.ignoreMode === 'match' ? ignored : (x) => x.includes(ignored as string),
+			ignored:
+				options.ignoreMode === 'match' ? ignored : (x: string) => x.includes(ignored as string),
 			persistent: true,
 			ignoreInitial:
 				options.ignoreInitial === undefined ? true : (options.ignoreInitial as boolean),
@@ -259,7 +260,9 @@ export class LocalFileTrigger implements INodeType {
 		};
 
 		for (const eventName of events) {
-			watcher.on(eventName, (pathString) => executeTrigger(eventName, pathString as string));
+			(watcher as any).on(eventName, (pathString: string) =>
+				executeTrigger(eventName, pathString as string),
+			);
 		}
 
 		async function closeFunction() {

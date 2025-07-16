@@ -3,13 +3,13 @@ import { GlobalConfig, InstanceSettingsConfig } from '@n8n/config';
 import { Service } from '@n8n/di';
 import callsites from 'callsites';
 import type { TransformableInfo } from 'logform';
-import { LoggerProxy, LOG_LEVELS } from 'n8n-workflow';
 import type {
 	Logger as LoggerType,
-	LogLocationMetadata,
 	LogLevel,
+	LogLocationMetadata,
 	LogMetadata,
 } from 'n8n-workflow';
+import { LOG_LEVELS, LoggerProxy } from 'n8n-workflow';
 import path, { basename } from 'node:path';
 import pc from 'picocolors';
 import winston from 'winston';
@@ -152,7 +152,7 @@ export class Logger implements LoggerType {
 		} else if (this.level === 'debug' && inProduction) {
 			return this.debugProdConsoleFormat();
 		} else {
-			return winston.format.printf(({ message }: { message: string }) => message);
+			return winston.format.printf((info: TransformableInfo) => String(info.message));
 		}
 	}
 

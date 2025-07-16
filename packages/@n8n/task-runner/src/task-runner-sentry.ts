@@ -1,5 +1,5 @@
 import { Service } from '@n8n/di';
-import type { ErrorEvent, Exception } from '@sentry/types';
+import type { ErrorEvent, Exception } from '@sentry/node';
 import { ErrorReporter } from 'n8n-core';
 
 import { SentryConfig } from './config/sentry-config';
@@ -56,7 +56,7 @@ export class TaskRunnerSentry {
 		if (!frames) return false;
 
 		return frames.some(
-			(frame) => frame.filename === 'node:vm' && frame.function === 'runInContext',
+			(frame: any) => frame.filename === 'node:vm' && frame.function === 'runInContext',
 		);
 	}
 }

@@ -13,7 +13,7 @@ import type {
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { rabbitDefaultOptions } from './DefaultOptions';
-import { MessageTracker, rabbitmqConnectQueue, parseMessage } from './GenericFunctions';
+import { MessageTracker, parseMessage, rabbitmqConnectQueue } from './GenericFunctions';
 import type { TriggerOptions } from './types';
 
 export class RabbitMQTrigger implements INodeType {
@@ -229,7 +229,7 @@ export class RabbitMQTrigger implements INodeType {
 
 			const closeFunction = async () => {
 				await channel.close();
-				await channel.connection.close();
+				await (channel.connection as any).close();
 				return;
 			};
 

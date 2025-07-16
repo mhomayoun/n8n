@@ -13,9 +13,7 @@ import type { ExchangeType, Options, RabbitMQCredentials, TriggerOptions } from 
 
 const credentialKeys = ['hostname', 'port', 'username', 'password', 'vhost'] as const;
 
-export async function rabbitmqConnect(
-	credentials: RabbitMQCredentials,
-): Promise<amqplib.Connection> {
+export async function rabbitmqConnect(credentials: RabbitMQCredentials): Promise<any> {
 	const credentialData = credentialKeys.reduce((acc, key) => {
 		acc[key] = credentials[key] === '' ? undefined : credentials[key];
 		return acc;
@@ -51,7 +49,7 @@ export async function rabbitmqCreateChannel(
 			// TODO: why is this error handler being added here?
 			connection.on('error', reject);
 
-			const channel = await connection.createChannel();
+			const channel = await (connection as any).createChannel();
 			resolve(channel);
 		} catch (error) {
 			reject(error);
@@ -154,7 +152,7 @@ export class MessageTracker {
 		}
 
 		await channel.close();
-		await channel.connection.close();
+		await (channel.connection as any).close();
 	}
 }
 

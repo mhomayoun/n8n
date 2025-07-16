@@ -245,8 +245,8 @@ export async function encodeEmail(email: IEmail) {
 	// by default the bcc headers are deleted when the mail is built.
 	// So add keepBcc flag to override such behaviour. Only works when
 	// the flag is set after the compilation.
-	// @ts-expect-error - https://nodemailer.com/extras/mailcomposer/#bcc
-	mail.keepBcc = true;
+	// https://nodemailer.com/extras/mailcomposer/#bcc
+	(mail as any).keepBcc = true;
 
 	const mailBody = await mail.build();
 
